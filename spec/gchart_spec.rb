@@ -569,3 +569,11 @@ describe 'exporting a chart' do
   end
 
 end
+
+describe "data markers" do
+  it "should be able to generate given a hash with marker options" do
+    p  Gchart.line(:data_markers => {:marker_type => "s", :color => 'FF0000', :data_set_index => 0, :data_point => 0, :size => 10.0, :priority => 0})
+    Gchart.line(:data_markers => {:marker_type => "s", :color => 'FF0000', :data_set_index => 0, :data_point => 0, :size => 10.0, :priority => 0}).include?('chm=s,FF0000,0,0,10.0,0').should be_true
+  end
+end
+

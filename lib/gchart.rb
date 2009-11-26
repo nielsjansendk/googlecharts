@@ -19,7 +19,7 @@ class Gchart
   
   attr_accessor :title, :type, :width, :height, :horizontal, :grouped, :legend, :data, :encoding, :min_value, :max_value, :bar_colors,
                 :title_color, :title_size, :custom, :axis_with_labels, :axis_labels, :bar_width_and_spacing, :id, :alt, :class,
-                :range_markers, :geographical_area, :map_colors, :country_codes, :axis_range
+                :range_markers, :data_markers, :geographical_area, :map_colors, :country_codes, :axis_range
     
   # Support for Gchart.line(:title => 'my title', :size => '400x600')
   def self.method_missing(m, options={})
@@ -256,6 +256,21 @@ class Gchart
     "#{orientation},#{options[:color]},0,#{options[:start_position]},#{options[:stop_position]}#{',1' if options[:overlaid?]}"  
   end
   
+  def set_data_markers
+    markers = case @data_markers
+    when Hash
+      set_data_marker(@data_markers)
+    when Array
+      data_markers.collect{|marker| set_data_marker(marker)}.join('|')
+    end
+    "chm=#{markers}"
+  end
+  
+  def set_data_marker(options)
+    marker_type = ["a","c","d","o","s","v","V","h","x"].include?(options[:marker_type]) ? options[:marker_type] : 's'
+    "#{marker_type},#{options[:color]},#{options[:data_set_index]},#{options[:data_point]},#{options[:size]},#{options[:priority]}"  
+  end
+  
   def fill_for(type=nil, color='', angle=nil)
     unless type.nil? 
       case type
@@ -469,6 +484,8 @@ class Gchart
         set_axis_labels
       when '@range_markers'
         set_range_markers
+      when '@data_markers'
+        set_data_markers
       when '@geographical_area'
         set_geographical_area
       when '@country_codes'
